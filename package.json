@@ -1,0 +1,30 @@
+{
+  "author": "JP Richardson <jp@gitpilot.com>",
+  "name": "potter",
+  "description": "A markdown static blog generator for Github.",
+  "version": "0.0.1",
+  "homepage": "",
+  "keywords": ["blog", "static", "markdown", "git", "github", "octopress", "jekyl"],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "./lib/potter.js",
+  "scripts": {
+    "test": "cake test"
+  },
+  "dependencies": {
+    "rock": "0.0.x",
+    "optimist": "0.3.x"
+  },
+  "devDependencies": {
+    "testutil": "0.2.x",
+    "mocha": "1.3.x",
+    "growl": "1.5.x",
+    "fs-extra": "0.1.x",
+    "path-extra": "0.0.x"
+  },
+  "engines": {
+    "node": "*"
+  }
+}
