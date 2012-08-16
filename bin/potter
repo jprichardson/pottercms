@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+var P = require('autoresolve');
+
+require(P('lib/cmd'));
