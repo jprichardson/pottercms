@@ -1,0 +1,15 @@
+{
+  "articles": {
+    "dateUrls": {
+      "enable": false,
+      "format": "{{date-year}}/{{date-month}}"
+    }
+  },
+  "services": {
+    "googleAnalytics": {
+      "enable": false,
+      "id": ""
+    }
+  },
+  "githubPublish": false
+}
