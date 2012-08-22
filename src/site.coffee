@@ -29,8 +29,8 @@ class Site
 
     now = new Date()
 
-    year = dt.eval(now, 'date-')['date-year']
-    month = dt.eval(now, 'date-')['date-month']
+    year = dt.eval(now)['year']
+    month = dt.eval(now)['month']
     articleFile = path.join('articles', year, month, slug + '.md')
     
     articleData = title: title, path: articleFile, createdAt: now.getTime(), tags: tags, published: false

@@ -48,7 +48,7 @@ describe 'Site', ->
         site.initialize (err) ->
           title = 'Global Thermal Nuclear War'
           slug = S(title).dasherize().toString().replace('-', '')
-          console.log slug
+          
           tags = ['politics', 'war']
           now = new Date()
 
