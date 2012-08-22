@@ -67,6 +67,18 @@ class Site
 
 
   saveData: (callback) ->
+    self = @
+    next flow =
+      ERROR: (err) ->
+        callback(err)
+      articleFile: ->
+        fs.writeFile self._articlesDataFile, JSON.stringify(self._articlesData, null, 2), @next
+      tagFile: ->
+        fs.writeFile self._tagsDataFile, JSON.stringify(self._tagsData, null, 2), @next
+      potterFile: ->
+        fs.writeFile self._potterDataFile, JSON.stringify(self._potterData, null, 2), @next
+      done: ->
+        callback(null)
 
 
 

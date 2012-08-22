@@ -63,6 +63,23 @@ describe 'Site', ->
 
           done()
 
+  describe '- saveData()', ->
+    it 'should save article, tag, and potter data', (done) ->
+      site = Site.create(TEST_DIR)
+      site.generateSkeleton (err) ->
+        site.initialize (err) ->
+          site._articlesData.a = 'a';
+          site._tagsData.b = 'b';
+          site._potterData.c = 'c';
+          site.saveData (err) ->
+            F err?
+            site2 = Site.create(TEST_DIR)
+            site2.initialize (err) ->
+              T site2._articlesData.a is 'a'
+              T site2._potterData.c is 'c'
+              T site2._tagsData.b is 'b'
+              done()
+
 
           
 
