@@ -2,6 +2,7 @@ P = require('autoresolve')
 path = require('path')
 fs = require('fs-extra')
 next = require('nextflow')
+bd = require('batchdir')
 
 class Article
   constructor: (@site) ->
@@ -17,15 +18,13 @@ class Article
     next flow =
       ERROR: (err) ->
         callback(err)
-      dirExists: ->
-        fs.exists dir, @next
-      makeIt: (itDoesExist) ->
-        if itDoesExist 
-          @next
-        else
-          fs.mkdir dir, @next
+      makeIt: ->
+        bd(dir).mkdir(@next)
       done: ->
-        fs.writeFile path.join(sp, articlePath), '', callback
+        file = path.join(sp, articlePath)
+        fs.writeFile file, '', (err) ->
+          callback(err, file)
+
 
 
   @create: (site) ->

@@ -35,8 +35,9 @@ describe 'Article', ->
               @next()
         createArticle: ->
           Article.create(site).createNew title, 'war, politics', @next
-        check: ->
-          T fs.existsSync path.join(TEST_DIR, 'articles', "#{dt.eval()['year']}/#{dt.eval()['month']}", slug + '.md')
+        check: (err, article) ->
+          T article is path.join(TEST_DIR, 'articles', "#{dt.eval()['year']}/#{dt.eval()['month']}", slug + '.md')
+          T fs.existsSync article
           done() 
 
 

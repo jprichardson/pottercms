@@ -2,7 +2,7 @@
   "author": "JP Richardson <jp@gitpilot.com>",
   "name": "pottercms",
   "homepage": "http://pottercms.com",
-  "description": "A markdown static content management system generator",
+  "description": "A markdown content management system.",
   "version": "0.0.0",
   "keywords": [
     "blog",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git@github.com:jprichardson/pottercms.git"
   },
   "licenses": [
     {
@@ -45,7 +45,9 @@
     "less": "~1.3.0",
     "date-tokens": "0.0.x",
     "underscore": "~1.3.3",
-    "batchflow": "0.0.3"
+    "batchflow": "0.0.3",
+    "parentpath": "0.0.1",
+    "batchdir": "0.0.2"
   },
   "devDependencies": {
     "testutil": "0.2.x",
@@ -56,5 +58,6 @@
   },
   "engines": {
     "node": "*"
-  }
+  },
+  "preferGlobal": true
 }

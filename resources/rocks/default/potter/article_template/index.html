@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>{{article.title}}</title>
+    <title>{{blog.title}}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="">
@@ -27,8 +27,11 @@
           <!--Sidebar content-->
         </div>
         <div class="span10">
-          {{{body}}}
-
+          <ul>
+            {{#list articles}}
+              <li><a href="{{path}}">{{title}}</a></li>
+            {{/list}}
+          </ul>
           <span id="footer">
             <br/>
             <span style="font-size: 10px">
@@ -44,4 +47,3 @@
     
   </body>
 </html>
-

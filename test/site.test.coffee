@@ -3,8 +3,11 @@ path = require('path')
 fs = require('fs-extra')
 P = require('autoresolve')
 {Site} = require(P('lib/site'))
+{Article} = require(P('lib/article'))
+potter = require(P('lib/potter'))
 _ = require('underscore')
 S = require('string')
+next = require('nextflow')
 
 TEST_DIR = ''
 
@@ -78,6 +81,67 @@ describe 'Site', ->
               T site2._articlesData.a is 'a'
               T site2._potterData.c is 'c'
               T site2._tagsData.b is 'b'
+              done()
+
+  describe '- publishAllArticles()', ->
+    it 'should publish all of the articles into a build dir with default options', (done) ->
+      buildDir = path.join(TEST_DIR, 'build')
+      articleDir = path.join(TEST_DIR, 'articles')
+      buildArticleDir = path.join(buildDir, 'articles')
+
+      t1 = 'The Fall of the Roman Empire'
+      t2 = 'Applications of Austrian Economics'
+      t3 = "Napoleon's Conquests"
+
+      s1 = 'the-fall-of-the-roman-empire'
+      s2 = 'applications-of-austrian-economics'
+      s3 = "napoleons-conquests"
+
+      o1 = path.join(buildArticleDir, s1 + '.html')
+      o2 = path.join(buildArticleDir, s2 + '.html')
+      o3 = path.join(buildArticleDir, s3 + '.html')
+
+      data = """
+              {{article.title}}
+              ===============
+
+              Blah blah blah
+             """
+
+      site = Site.create(TEST_DIR)
+      site.generateSkeleton (err) ->
+        site.initialize (err) ->
+          next flow =
+            ERROR: (err) ->
+              done(err)
+            createA1: -> 
+              nf = @
+              Article.create(site).createNew t1, ['rome', 'history'], (err, file) ->
+                fs.writeFileSync(file, data)
+                nf.next()
+            createA2: -> 
+              nf = @
+              Article.create(site).createNew t2, ['economics', 'money'], (err, file) ->
+                fs.writeFileSync(file, data)
+                nf.next()
+            createA3: -> 
+              nf = @
+              Article.create(site).createNew t3, ['history'], (err, file) ->
+                fs.writeFileSync(file, data)
+                nf.next()
+            publish: ->
+              F fs.existsSync(buildDir)
+              site.publishAllArticles @next
+            checkPaths: ->
+              T fs.existsSync(o1)
+              T fs.existsSync(o2)
+              T fs.existsSync(o3)
+
+              T fs.existsSync(path.join(buildDir, 'vendor'))
+
+              T S(fs.readFileSync(o1, 'utf8').toString()).contains('<h1>' + t1)
+              T S(fs.readFileSync(o2, 'utf8').toString()).contains('<h1>' + t2)
+
               done()
 
 

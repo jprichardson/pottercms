@@ -13,6 +13,7 @@ hl = require('highlight').Highlight
 less = require('less')
 dt = require('date-tokens')
 _ = require('underscore')
+parent = require('parentpath')
 
 marked.setOptions
   gfm: true,
@@ -25,7 +26,7 @@ marked.setOptions
 
 
 newSite = (path, callback) ->
-  rock.create(path, '/Users/jprichardson/Dropbox/Projects/Personal/rocks/rock-potter', callback)
+  rock.create(path, '/Users/jp/Dropbox/Projects/Personal/rocks/rock-potter', callback)
 
 newArticle = (title, tags, callback) ->
   urlSlug = S(title).dasherize().toString()
@@ -224,10 +225,19 @@ publish = (callback) ->
       callback(null, outputFiles)
 
 
+@resolveAppDir = (callback) ->
+  parent.find 'potter/potter.json', callback(dir) 
+
+
+slugify = (s) -> 
+  sl = S(s.replace(/[^\w\s-]/g, '')).dasherize().s
+  sl = sl.substr(1) if sl.charAt(0) is '-'
+  sl
 
 module.exports.newSite = newSite
 module.exports.newArticle = newArticle
 module.exports.publish = publish
+module.exports.slugify = slugify
 
 
 inPotterPath = (callback) ->
@@ -247,4 +257,6 @@ inPotterPath = (callback) ->
         callback(false)
       else
         callback(true)
+
+
 
