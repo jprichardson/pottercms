@@ -7,7 +7,6 @@ path = require('path-extra')
 Handlebars = require('handlebars')
 {TriggerFlow} = require('triggerflow')
 marked = require('marked')
-configs = require('fnoc').configs()
 P = require('autoresolve')
 hl = require('highlight').Highlight
 less = require('less')

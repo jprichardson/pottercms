@@ -31,11 +31,10 @@
     "test": "cake test"
   },
   "dependencies": {
-    "rock": "~0.1.0",
+    "rock": "~0.1.1",
     "optimist": "0.3.x",
     "marked": "0.2.x",
-    "fnoc": "0.1.x",
-    "fs-extra": "~0.1.3",
+    "fs-extra": "~0.2.1",
     "path-extra": "0.0.x",
     "autoresolve": "0.0.x",
     "string": "0.2.x",
@@ -45,9 +44,11 @@
     "less": "~1.3.0",
     "date-tokens": "0.0.x",
     "underscore": "~1.3.3",
-    "batchflow": "0.0.3",
+    "batchflow": "~0.1.0",
     "parentpath": "0.0.1",
-    "batchdir": "0.0.2"
+    "batchdir": "~0.1.0",
+    "batchfile": "~0.1.2",
+    "fnoc": "~0.2.1"
   },
   "devDependencies": {
     "testutil": "0.2.x",

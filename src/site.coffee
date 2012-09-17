@@ -10,13 +10,17 @@ bd = require('batchdir')
 hl = require('highlight').Highlight
 marked = require('marked')
 Handlebars = require('Handlebars')
-configs = require('fnoc').configs()
+potterPackage = require('../package.json')
 _ = require('underscore')
-btf = require('batchtransform')
+batchfile = require('batchfile')
 potter = require(P('lib/potter'))
+util = require('util')
+packageObj = require('../package')
 
 #console.log JSON.stringify configs.package
 #process.exit()
+
+module.exports.DEFAULT_ROCK = DEFAULT_ROCK = 'personal_blog'
 
 Handlebars.registerHelper 'list', (items, options) ->
   out = ''
@@ -28,32 +32,13 @@ marked.setOptions gfm: true, pedantic: false, sanitize: true, highlight: (code, 
   hl(code)
 
 class Site
-  constructor: (@sitePath) ->
-    @_potterDir = path.join(@sitePath, 'potter')
-    @_dataDir = path.join(@_potterDir, 'data')
-    @_buildDir = path.join(@sitePath, 'build')
-    @_articlesBuildDir = path.join(@_buildDir, 'articles')
-    @_vendorBuildDir = path.join(@_buildDir, 'vendor')
+  constructor: (@sitePath, @rockTemplate) ->
+    @potterDir = path.join(@sitePath, 'potter')
+    @buildDir = path.join(@sitePath, 'build')
 
-    @_articleTemplateDir = path.join(@_potterDir, 'article_template')
-
-    @_potterDataFile = path.join(@_potterDir, 'potter.json')
-    @_articlesDataFile = path.join(@_dataDir, 'articles.json')
-    @_pagesDataFile = path.join(@_dataDir, 'pages.json')
-    @_tagsDataFile = path.join(@_dataDir, 'tags.json')
-
-    @_articleLayoutFile = path.join(@_articleTemplateDir, 'layout.html')
-    @_articleLayoutTmpl = ''
-    @_articleUrlTmpl = ''
-    @_articleIndexFile = path.join(@_articleTemplateDir, 'index.html')
-    @_articleIndexTmpl = ''
-
-
-
-    @_potterData = {}
-    @_articlesData = {}
-    @_pagesData = {}
-    @_tagsData = {}
+    @articleTemplates = {}
+    @potterData = {}
+    @potterTemplates = {}
 
     @initialized = false
 
@@ -69,12 +54,12 @@ class Site
     articleFile = path.join('articles', year, month, slug + '.md')
     
     articleData = title: title, path: articleFile, createdAt: now.getTime(), tags: tags, published: false
-    @_articlesData.articles[slug + '-' + now.toISOString()] = articleData
+    @potterData['articles.json'].data.articles[slug + '-' + now.toISOString()] = articleData
     articleFile
 
 
   generateSkeleton: (callback) -> #template not used yet
-    rock.create @sitePath, P('resources/rocks/default'), callback
+    rock.create @sitePath, P('resources/rocks/' + @rockTemplate), callback
 
 
   initialize: (callback) ->
@@ -83,67 +68,80 @@ class Site
       ERROR: (err) ->
         callback(err)
       loadPotterData: ->
-        fs.readJSONFile self._potterDataFile, @next
-      loadArticlesData: (err, data) ->
-        self._potterData = data
-        fs.readJSONFile self._articlesDataFile, @next
-      loadTagsData: (err, data) ->
-        self._articlesData = data
-        fs.readJSONFile self._tagsDataFile, @next
-      loadArticleTemplate: (err, data) ->
-        self._tagsData = data
-        fs.readFile self._articleLayoutFile, 'utf8', @next
-      loadArticleIndexTemplate: (err, data) ->
-        self._articleLayoutTmpl = Handlebars.compile(data)
-        fs.readFile self._articleIndexFile, 'utf8', @next
-      done: (err, data) ->
-        self._articleIndexTmpl = Handlebars.compile(data)
-        self._articleUrlTmpl = Handlebars.compile(self._potterData?.articles?.dateUrls?.format)
-
+        modifier = (val) -> val.data = JSON.parse(val.text); delete val.text
+        loadFilesInDir path.join(self.potterDir, 'data'), modifier, @next
+      loadArticleTemplateFiles: (err, res) ->
+        self.potterData = res
+        modifier = (val) -> val.template = Handlebars.compile(val.text); delete val.text
+        loadFilesInDir path.join(self.potterDir, 'article_template'), modifier, @next
+      loadPotterTemplateFiles: (err, res) ->
+        nf = @
+        self.articleTemplates = res
+        modifier = (val) -> val.text = Handlebars.compile(val.text)(self.potterData['potter.json'])
+        loadFilesInDir P('resources/templates'), modifier, (err, res) ->
+          if err 
+            flow.error(err)
+          else
+            for own file,val of res
+              delete res[val]
+              res[path.basename(file, '.html')] = val.text
+          self.potterTemplates = res
+          nf.next()
+      done: ->
         self.initialized = true
-        
-        self._articlesData = {} if not self._articlesData?
-        self._articlesData.articles = {} if not self._articlesData.articles?
-
+        self.potterData['potter.json'].data.homepage = packageObj.homepage
+        self.potterData['potter.json'].data.version = packageObj.version
         callback(null)
 
   publishAllArticles: (callback) ->
     self = @
     outputArticles = {}
+    buildArticleDir = @buildDir#path.join(@buildDir, 'articles')
+    buildVendorDir = path.join(@buildDir, 'vendor')
+    potterData = @potterData['potter.json'].data
+
+    potterData.paths = potterData.paths || {}
+
+    potterData.paths['bootstrap'] = '../vendor/bootstrap-2.0.4/themes/readable/bootstrap.min.css'
+    potterData.paths['highlight'] = '../vendor/highlight.js/styles/github.css'
+
+    urlFormat = Handlebars.compile(potterData.articles.urlFormat)
+    templateVals = self: null, template: @potterTemplates, potter: potterData
 
     next flow =
       ERROR: (err) ->
         callback(err)
       buildArticleDir: ->
-        bd(self._articlesBuildDir).mkdir(@next)
+        bd(buildArticleDir).mkdir(@next)
       deleteVendorDir: ->
-        bd(self._vendorBuildDir).remove(@next)
+        bd(buildVendorDir).remove(@next)
       copyVendor: ->
-        fs.copy(P('vendor'), self._vendorBuildDir, @next)
+        fs.copy(P('vendor'), buildVendorDir, @next)
       iterateArticles: ->
         nf = @
-        articleKeys = _(self._articlesData.articles).keys()
-        articleFiles = _(self._articlesData.articles).pluck('path')
+        articles = self.potterData['articles.json'].data.articles
+        articleKeys = _(articles).keys()
+        articleFiles = _(articles).pluck('path')
         articleFiles = articleFiles.map((file) -> path.join(self.sitePath, file))
 
-        b = btf(articleFiles).transform (i, file, data, write) ->
+        b = batchfile(articleFiles).transform (i, file, data, write) ->
           slug = path.basename(file, '.md')
           md = marked(data.toString())
 
-          articleData = self._articlesData.articles[articleKeys[i]]
+          articleData = articles[articleKeys[i]]
           md = Handlebars.compile(md)(article: articleData)
 
-          htmlFile = ''; part = ''
-          if self._potterData?.articles?.dateUrls?.enable
-            part = self._articleUrlTmpl(dt.eval(new Date(article.obj.createdAt), 'date-'))
-            htmlFile = path.join(self._articlesBuildDir, part, slug + '.html')
-          else
-            htmlFile = path.join(self._articlesBuildDir, slug + '.html')
+          urlData = slug: slug #add author in the future
+          urlData = _.extend(urlData, dt.eval(new Date(articleData.createdAt), 'date-'))
+          htmlFile = path.join(buildArticleDir, urlFormat(urlData) + '.html')
 
-          configs.package['bootstrap-path'] = '../vendor/bootstrap-2.0.4/themes/readable/bootstrap.min.css'
-          configs.package['highlight-path'] = '../vendor/highlight.js/styles/github.css'
+          #_article
+          html = self.articleTemplates['_article.html'].template(body: md, potter: potterData)
 
-          html = self._articleLayoutTmpl(body: md, potter: configs.package, article: articleData)
+          #layout
+          self.potterTemplates.main = html
+          html = self.articleTemplates['layout.html'].template(templateVals)
+         
           outputArticles[articleKeys[i]] = path: htmlFile, title: articleData.title, createdAt: articleData.createdAt
           write(htmlFile, html)
         b.error (err) -> nf.error(err)
@@ -151,9 +149,14 @@ class Site
           nf.next()
       generateIndex: ->
         outputArticles = _(outputArticles).sortBy (val) -> -val.createdAt
-        console.log JSON.stringify(outputArticles, null, 2)
-        html = self._articleIndexTmpl(articles: outputArticles, potter: configs.package)
-        fs.writeFile path.join(self._articlesBuildDir, 'index.html'), html, @next
+
+        #_index
+        html = self.articleTemplates['_index.html'].template(articles: outputArticles, potter: potterData)
+
+        #layout
+        self.potterTemplates.main = html
+        html = self.articleTemplates['layout.html'].template(templateVals)
+        fs.writeFile path.join(self.buildDir, potterData.articles.indexUrl), html, @next
       done: ->
         callback(null)
 
@@ -164,20 +167,54 @@ class Site
       ERROR: (err) ->
         callback(err)
       articleFile: ->
-        fs.writeFile self._articlesDataFile, JSON.stringify(self._articlesData, null, 2), @next
+        obj = self.potterData['articles.json']
+        fs.writeFile obj.path, JSON.stringify(obj.data, null, 2), @next
       tagFile: ->
-        fs.writeFile self._tagsDataFile, JSON.stringify(self._tagsData, null, 2), @next
+        obj = self.potterData['tags.json']
+        fs.writeFile obj.path, JSON.stringify(obj.data, null, 2), @next
       potterFile: ->
-        fs.writeFile self._potterDataFile, JSON.stringify(self._potterData, null, 2), @next
+        obj = self.potterData['potter.json']
+        fs.writeFile obj.path, JSON.stringify(obj.data, null, 2), @next
       done: ->
         callback(null)
 
 
 
-  @create: (path) ->
-    new Site(path)
+  @create: (path, rock) ->
+    r = rock || DEFAULT_ROCK
+    new Site(path, r)
 
 
 module.exports.Site = Site
+
+## PRIVATE METHODS
+
+loadFilesInDir = (dir, valModifier, callback) ->
+  if not callback
+    callback = valModifier
+    valModifier = null
+  fs.readdir dir, (err, files) ->
+    if err
+      callback(err, null)
+    else
+      files = files.map (f) -> path.join(dir, f)
+      bf = batchfile(files).read (i, file, data, next) ->
+        text = data.toString()
+        fileKey = path.basename(file)
+        val = text: text, path: file, key: fileKey
+        if valModifier
+          valModifier(val) #valModifier is function to attach any additional values to object
+        next(val)
+      bf.error(callback)
+      bf.end (results) ->
+        res = {}
+        for obj in results
+          res[obj.key] = obj
+          delete obj.key
+        callback(null, res)
+
+
+
+
 
 

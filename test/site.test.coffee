@@ -25,7 +25,7 @@ describe 'Site', ->
 
   describe '- generateSkeleton()', ->
     it 'should generate a new skeleton cms', (done) ->
-      site = Site.create(TEST_DIR)
+      site = Site.create(TEST_DIR, 'personal_blog')
       site.generateSkeleton (err) ->
         F err?
         T fs.existsSync path.join(TEST_DIR, 'articles')
@@ -36,7 +36,7 @@ describe 'Site', ->
 
   describe '- initialize()', ->
     it 'should initialize the Site object with values', (done) ->
-      site = Site.create(TEST_DIR)
+      site = Site.create(TEST_DIR, 'personal_blog')
       site.generateSkeleton (err) ->
         F err?
         site.initialize (err) ->
@@ -46,7 +46,7 @@ describe 'Site', ->
 
   describe '- addArticleEntry()', ->
     it 'should add an article entry into the article data file with a tag array', (done) ->
-      site = Site.create(TEST_DIR)
+      site = Site.create(TEST_DIR, 'personal_blog')
       site.generateSkeleton (err) ->
         site.initialize (err) ->
           title = 'Global Thermal Nuclear War'
@@ -55,7 +55,7 @@ describe 'Site', ->
           tags = ['politics', 'war']
           now = new Date()
 
-          ad = site._articlesData;
+          ad = site.potterData['articles.json'].data;
           T _(ad.articles).size() is 0
           articlePath = site.addArticleEntry(title, tags)
 
@@ -71,16 +71,16 @@ describe 'Site', ->
       site = Site.create(TEST_DIR)
       site.generateSkeleton (err) ->
         site.initialize (err) ->
-          site._articlesData.a = 'a';
-          site._tagsData.b = 'b';
-          site._potterData.c = 'c';
+          site.potterData['articles.json'].data.a = 'a';
+          site.potterData['tags.json'].data.b = 'b';
+          site.potterData['potter.json'].data.c = 'c';
           site.saveData (err) ->
             F err?
             site2 = Site.create(TEST_DIR)
             site2.initialize (err) ->
-              T site2._articlesData.a is 'a'
-              T site2._potterData.c is 'c'
-              T site2._tagsData.b is 'b'
+              T site2.potterData['articles.json'].data.a == 'a'
+              T site2.potterData['potter.json'].data.c == 'c'
+              T site2.potterData['tags.json'].data.b == 'b'
               done()
 
   describe '- publishAllArticles()', ->
@@ -108,7 +108,7 @@ describe 'Site', ->
               Blah blah blah
              """
 
-      site = Site.create(TEST_DIR)
+      site = Site.create(TEST_DIR, 'personal_blog')
       site.generateSkeleton (err) ->
         site.initialize (err) ->
           next flow =
@@ -141,6 +141,10 @@ describe 'Site', ->
 
               T S(fs.readFileSync(o1, 'utf8').toString()).contains('<h1>' + t1)
               T S(fs.readFileSync(o2, 'utf8').toString()).contains('<h1>' + t2)
+
+              index = fs.readFileSync(path.join(buildArticleDir, 'index.html'), 'utf8')
+              T S(index).contains(t1)
+              T S(index).contains(t2)
 
               done()
 
