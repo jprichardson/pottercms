@@ -93,7 +93,7 @@ class Site
         self.potterData['potter.json'].data.version = packageObj.version
         callback(null)
 
-  publishAllArticles: (callback) ->
+  buildAllArticles: (callback) ->
     self = @
     outputArticles = {}
     buildArticleDir = @buildDir#path.join(@buildDir, 'articles')

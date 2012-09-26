@@ -51,6 +51,8 @@ main = ->
       when 'page', 'pg'
         console.log 'Page functionality not yet implemented.'
       when 'publish', 'pub'
+        console.log 'functionality not yet implemented.'
+      when 'build'
         potter.publish (err, outputFiles) ->
           if err? then console.error(err); return
           console.log "Generated #{file}..." for file in outputFiles

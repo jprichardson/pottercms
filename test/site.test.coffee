@@ -82,8 +82,8 @@ describe 'Site', ->
               T site2.potterData['tags.json'].data.b == 'b'
               done()
 
-  describe '- publishAllArticles()', ->
-    it 'should publish all of the articles into a build dir with default options', (done) ->
+  describe '- buildAllArticles()', ->
+    it 'should build all of the articles into a build dir with default options', (done) ->
       buildDir = path.join(TEST_DIR, 'build')
       articleDir = path.join(TEST_DIR, 'articles')
       buildArticleDir = path.join(buildDir, 'articles')
@@ -130,7 +130,7 @@ describe 'Site', ->
                 nf.next()
             publish: ->
               F fs.existsSync(buildDir)
-              site.publishAllArticles @next
+              site.buildAllArticles @next
             checkPaths: ->
               T fs.existsSync(o1)
               T fs.existsSync(o2)
