@@ -39,7 +39,7 @@ main = ->
           if fs.existsSync process.argv[3]
             console.log("#{process.argv[3]} already exists.")
           else
-            potter.newSite process.argv[3], (err) ->
+            Site.create(process.argv[3]).generateSkeleton (err) -> #potter.newSite process.argv[3], (err) ->
               if err? then console.log err; return
               console.log "Successfully created #{process.argv[3]}."
         else
