@@ -13,6 +13,7 @@ less = require('less')
 dt = require('date-tokens')
 _ = require('underscore')
 parent = require('parentpath')
+buffet = require('buffet')(root: './build')
 
 marked.setOptions
   gfm: true,
@@ -228,16 +229,30 @@ publish = (callback) ->
   parent.find 'potter/potter.json', callback(dir) 
 
 
-slugify = (s) -> 
-  sl = S(s.replace(/[^\w\s-]/g, '')).dasherize().s
-  sl = sl.substr(1) if sl.charAt(0) is '-'
-  sl
+serve = ->
+  port = process.env.PORT || 2222
+  server = require('http').createServer()
+  server.on 'request', (req, res) ->
+    req.url = req.url#+ '.html'
+    buffet(req, res)
+
+  #server.on 'request', buffet
+  server.on 'request', buffet.notFound
+  #server.on 'request', (req, res) ->
+  #  console.log util.inspect(req)
+
+
+  server.listen port, ->
+    console.log "Serving up #{path.join(process.cwd(), 'build')} on port 2222..."
+
+
+
+
 
 module.exports.newSite = newSite
 module.exports.newArticle = newArticle
 module.exports.publish = publish
-module.exports.slugify = slugify
-
+module.exports.serve = serve
 
 inPotterPath = (callback) ->
   articleDir = path.join(process.cwd(), 'articles')

@@ -13,9 +13,8 @@ TEST_DIR = ''
 
 describe 'Site', ->
   beforeEach (done) ->
-    TEST_DIR = testutil.generateTestPath('test-potter')
-    TEST_DIR = path.join(TEST_DIR, 'mycmsblog')
-    fs.mkdir(TEST_DIR, done)
+    TEST_DIR = testutil.createTestDir('potter')
+    done()
 
   describe '+ create()', ->
     it 'should create a Site object', ->
@@ -142,7 +141,9 @@ describe 'Site', ->
               T S(fs.readFileSync(o1, 'utf8').toString()).contains('<h1>' + t1)
               T S(fs.readFileSync(o2, 'utf8').toString()).contains('<h1>' + t2)
 
-              index = fs.readFileSync(path.join(buildArticleDir, 'index.html'), 'utf8')
+              indexFile = path.join(buildArticleDir, 'index.html')
+              T fs.existsSync(indexFile)
+              index = fs.readFileSync(indexFile, 'utf8')
               T S(index).contains(t1)
               T S(index).contains(t2)
 

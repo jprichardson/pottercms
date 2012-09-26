@@ -45,7 +45,7 @@ class Site
   addArticleEntry: (title, tags) ->
     #slug = S(title).dasherize().toString()
     #if slug[0] is '-' then slug = slug.replace('-', '') #replace first occurence
-    slug = potter.slugify(title)
+    slug = S(title).slugify()
 
     now = new Date()
 
@@ -102,8 +102,9 @@ class Site
 
     potterData.paths = potterData.paths || {}
 
-    potterData.paths['bootstrap'] = '../vendor/bootstrap-2.0.4/themes/readable/bootstrap.min.css'
-    potterData.paths['highlight'] = '../vendor/highlight.js/styles/github.css'
+    #potterData.paths['bootstrap'] = 'http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap-combined.min.css' #/vendor/bootstrap-2.0.4/themes/readable/bootstrap.min.css'
+    potterData.paths['bootstrap'] = 'http://netdna.bootstrapcdn.com/bootswatch/2.1.0/spacelab/bootstrap.min.css'
+    potterData.paths['highlight'] = '/vendor/highlight.js/styles/github.css'
 
     urlFormat = Handlebars.compile(potterData.articles.urlFormat)
     templateVals = self: null, template: @potterTemplates, potter: potterData
@@ -133,7 +134,8 @@ class Site
 
           urlData = slug: slug #add author in the future
           urlData = _.extend(urlData, dt.eval(new Date(articleData.createdAt), 'date-'))
-          htmlFile = path.join(buildArticleDir, urlFormat(urlData) + '.html')
+          relHtmlFile = urlFormat(urlData) + '.html'
+          htmlFile = path.join(buildArticleDir, relHtmlFile)
 
           #_article
           html = self.articleTemplates['_article.html'].template(body: md, potter: potterData)
@@ -142,7 +144,7 @@ class Site
           self.potterTemplates.main = html
           html = self.articleTemplates['layout.html'].template(templateVals)
          
-          outputArticles[articleKeys[i]] = path: htmlFile, title: articleData.title, createdAt: articleData.createdAt
+          outputArticles[articleKeys[i]] = path: '/' + relHtmlFile, title: articleData.title, createdAt: articleData.createdAt
           write(htmlFile, html)
         b.error (err) -> nf.error(err)
         b.end ->

@@ -1,11 +1,13 @@
-configs = require('fnoc').configs()
+#TODO: fix configs.package.version
+
+fnoc = require('fnoc')
 util = require('util')
 P = require('autoresolve')
 potter = require(P('lib/potter'))
 fs = require('fs')
 
-USAGE = util.format("\nPotter [%s]: Install project templates.\n", configs.package.version);
-USAGE += "Usage: potter [new|article|a|page|pg|publish|pub] [options]";
+USAGE = util.format("\nPotter [%s]: Install project templates.\n", 'configs.package.version');
+USAGE += "Usage: potter [new|article|a|build|page|pg|publish|pub|serve] [options]";
 
 opt = require('optimist')
   .usage(USAGE)
@@ -19,7 +21,7 @@ main = ->
   else
     switch process.argv[2]
       when '--version'
-        console.log('Potter %s', configs.package.version)
+        console.log('Potter %s', 'configs.package.version')
       when 'help'
         switch process.argv[3]
           when 'article', 'a'
@@ -28,6 +30,8 @@ main = ->
             displayPageHelp()
           when 'pub', 'publish'
             displayPublishHelp()
+          when 'serve'
+            displayServeHelp()
           when 'tag'
             displayTagHelp()
       when 'new'
@@ -51,6 +55,9 @@ main = ->
           if err? then console.error(err); return
           console.log "Generated #{file}..." for file in outputFiles
           console.log "Successfully published."
+      when 'serve'
+        potter.serve()
+
       else displayHelp()
 
 
@@ -64,6 +71,9 @@ displayPageHelp = ->
   console.log('Not yet implemented.')
 
 displayPublishHelp = ->
+  console.log('Not yet implemented.')
+
+displayServeHelp = ->
   console.log('Not yet implemented.')
 
 displayTagHelp = ->

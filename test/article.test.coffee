@@ -12,9 +12,8 @@ TEST_DIR = ''
 
 describe 'Article', ->
   beforeEach (done) ->
-    TEST_DIR = testutil.generateTestPath('test-potter')
-    TEST_DIR = path.join(TEST_DIR, 'myblog')
-    fs.mkdir(TEST_DIR, done)
+    TEST_DIR = testutil.createTestDir('potter')
+    done()
 
   describe '+ createNew', ->
 
