@@ -61,5 +61,8 @@
   "engines": {
     "node": "*"
   },
-  "preferGlobal": true
+  "preferGlobal": true,
+  "bin": {
+    "potter": "./bin/potter"
+  }
 }
