@@ -1,9 +1,11 @@
 Node.js - potter
 ==================
 
-A markdown static blog generator for Github.
+A markdown static site generator.
 
-Don't use this right now. It probably won't work on your system. The code is shit at this moment since it's a prototype.
+As I eat my own dogfood more and it stabilizes, I'll post more documentation. Until, wade at your own peril.
+
+You'll be able to see an example of it in use at: http://www.loudjet.com
 
 
 Why?

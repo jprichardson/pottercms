@@ -1,3 +1,5 @@
+#most of this file isn't used, TODO: delete most of it.
+
 rock = require('rock')
 S = require('string')
 next = require('nextflow')

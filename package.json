@@ -3,7 +3,7 @@
   "name": "pottercms",
   "homepage": "http://pottercms.com",
   "description": "A markdown content management system.",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "keywords": [
     "blog",
     "static",
