@@ -3,8 +3,9 @@
 fnoc = require('fnoc')
 util = require('util')
 P = require('autoresolve')
-potter = require(P('lib/potter'))
 fs = require('fs')
+{Site} = require(P('lib/site'))
+parent = require('parentpath')
 
 USAGE = util.format("\nPotter [%s]: Install project templates.\n", 'configs.package.version');
 USAGE += "Usage: potter [new|article|a|build|page|pg|publish|pub|serve] [options]";
@@ -15,7 +16,7 @@ opt = require('optimist')
 #  .alias('p', 'page').describe('p', 'pages')
 argv = opt.argv;
 
-main = ->
+main = (potterDir) ->
   if process.argv.length < 3
     displayHelp()
   else
@@ -53,12 +54,16 @@ main = ->
       when 'publish', 'pub'
         console.log 'functionality not yet implemented.'
       when 'build'
-        potter.publish (err, outputFiles) ->
-          if err? then console.error(err); return
-          console.log "Generated #{file}..." for file in outputFiles
-          console.log "Successfully published."
+        site = Site.create(potterDir)
+        site.initialize (err) ->
+          if err then console.error(err); return
+          site.buildAllArticles (err, outputFiles) ->
+            if err? then console.error(err); return
+            #console.log "Generated #{file}..." for file in outputFiles
+            console.log "Successfully built."
       when 'serve'
-        potter.serve()
+        site = Site.create(potterDir)
+        site.serve()
 
       else displayHelp()
 
@@ -92,6 +97,8 @@ handleArticleArgs = (args, tags) ->
     else displayArticleHelp()
 
 
-main()
+#parent.find('potter/data/potter.json').end (dir) ->
+#console.log (dir)
+main(process.cwd())
 
 

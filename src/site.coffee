@@ -13,9 +13,11 @@ Handlebars = require('Handlebars')
 potterPackage = require('../package.json')
 _ = require('underscore')
 batchfile = require('batchfile')
-potter = require(P('lib/potter'))
+#potter = require(P('lib/potter'))
 util = require('util')
 packageObj = require('../package')
+buffet = require('buffet')(root: './build')
+
 
 #console.log JSON.stringify configs.package
 #process.exit()
@@ -30,6 +32,7 @@ Handlebars.registerHelper 'list', (items, options) ->
 
 marked.setOptions gfm: true, pedantic: false, sanitize: true, highlight: (code, lang) ->
   hl(code)
+
 
 class Site
   constructor: (@sitePath, @rockTemplate) ->
@@ -180,6 +183,21 @@ class Site
       done: ->
         callback(null)
 
+
+  serve: ->
+    port = process.env.PORT || 2222
+    server = require('http').createServer()
+    server.on 'request', (req, res) ->
+      req.url = req.url#+ '.html'
+      buffet(req, res)
+
+    #server.on 'request', buffet
+    server.on 'request', buffet.notFound
+    #server.on 'request', (req, res) ->
+    #  console.log util.inspect(req)
+  
+    server.listen port, ->
+      console.log "Serving up #{path.join(process.cwd(), 'build')} on port 2222..."
 
 
   @create: (path, rock) ->
