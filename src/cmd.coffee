@@ -91,7 +91,9 @@ displayTagHelp = ->
 handleArticleArgs = (args, tags) ->
   switch args[0]
     when 'new' 
-      potter.newArticle args[1], tags, (err, file) ->
+      #potter.newArticle args[1], tags, (err, file) ->
+      site = Site.create(potterDir)
+      Article.create(site).createNew args[1], tags, (err, file) ->
         if err? then console.error(err); return
         console.log "Successfully created #{file}."
     else displayArticleHelp()
