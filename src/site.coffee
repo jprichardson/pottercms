@@ -37,7 +37,7 @@ marked.setOptions gfm: true, pedantic: false, sanitize: true, highlight: (code, 
 class Site
   constructor: (@sitePath, @rockTemplate) ->
     @potterDir = path.join(@sitePath, 'potter')
-    @buildDir = path.join(@sitePath, 'build')
+    @buildDir = path.join(@sitePath, 'public')
 
     @articleTemplates = {}
     @potterData = {}
@@ -196,8 +196,8 @@ class Site
     #server.on 'request', (req, res) ->
     #  console.log util.inspect(req)
   
-    server.listen port, ->
-      console.log "Serving up #{path.join(process.cwd(), 'build')} on port 2222..."
+    server.listen port, =>
+      console.log "Serving up #{path.join(process.cwd(), @buildDir)} on port 2222..."
 
 
   @create: (path, rock) ->

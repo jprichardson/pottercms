@@ -83,7 +83,7 @@ describe 'Site', ->
 
   describe '- buildAllArticles()', ->
     it 'should build all of the articles into a build dir with default options', (done) ->
-      buildDir = path.join(TEST_DIR, 'build')
+      buildDir = path.join(TEST_DIR, 'public')
       articleDir = path.join(TEST_DIR, 'articles')
       buildArticleDir = path.join(buildDir, 'articles')
 
@@ -128,7 +128,6 @@ describe 'Site', ->
                 fs.writeFileSync(file, data)
                 nf.next()
             publish: ->
-              F fs.existsSync(buildDir)
               site.buildAllArticles @next
             checkPaths: ->
               T fs.existsSync(o1)
