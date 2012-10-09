@@ -81,7 +81,7 @@ class Site
         nf = @
         self.articleTemplates = res
         modifier = (val) -> val.text = Handlebars.compile(val.text)(self.potterData['potter.json'])
-        loadFilesInDir P('resources/templates'), modifier, (err, res) ->
+        loadFilesInDir P('resources/partials'), modifier, (err, res) ->
           if err 
             flow.error(err)
           else
