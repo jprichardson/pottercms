@@ -37,7 +37,7 @@
     "fs-extra": "~0.2.1",
     "path-extra": "0.0.x",
     "autoresolve": "0.0.x",
-    "string": "~1.0.0",
+    "string": "~1.1.0",
     "handlebars": "~1.0.6-2",
     "triggerflow": "0.0.x",
     "highlight": "~0.2.2",
@@ -52,7 +52,7 @@
     "buffet": "~0.4.5",
     "nextflow": "~0.2.3",
     "walker": "~1.0.3",
-    "yaml": "~0.2.3"
+    "markdown-extra": "0.0.1"
   },
   "devDependencies": {
     "testutil": "~0.2.4",

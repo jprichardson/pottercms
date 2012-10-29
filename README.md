@@ -26,6 +26,7 @@ Installation
 Usage
 -----
 
+Don't. At least not yet.
 
 
 
