@@ -3,7 +3,7 @@ path = require('path')
 fs = require('fs-extra')
 P = require('autoresolve')
 {Site} = require(P('lib/site'))
-{Article} = require(P('lib/article'))
+bd = require('batchdir')
 _ = require('underscore')
 S = require('string')
 next = require('nextflow')
@@ -64,22 +64,6 @@ describe 'Site', ->
 
           done()
 
-  describe '- saveData()', ->
-    it 'should save article, tag, and potter data', (done) ->
-      site = Site.create(TEST_DIR)
-      site.generateSkeleton (err) ->
-        site.initialize (err) ->
-          site.potterData['articles.json'].data.a = 'a';
-          site.potterData['tags.json'].data.b = 'b';
-          site.potterData['potter.json'].data.c = 'c';
-          site.saveData (err) ->
-            F err?
-            site2 = Site.create(TEST_DIR)
-            site2.initialize (err) ->
-              T site2.potterData['articles.json'].data.a == 'a'
-              T site2.potterData['potter.json'].data.c == 'c'
-              T site2.potterData['tags.json'].data.b == 'b'
-              done()
 
   describe '- buildAllArticles()', ->
     it 'should build all of the articles into a build dir with default options', (done) ->
@@ -146,6 +130,35 @@ describe 'Site', ->
               T S(index).contains(t2)
 
               done()
+
+
+##DELETE Article
+
+class Article
+  constructor: (@site) ->
+
+  createNew: (title, tags, callback) ->
+    if typeof tags is 'string'
+      tags = tags.split(',').map((e) -> e.trim())
+    
+    articlePath = @site.addArticleEntry(title, tags)
+    dir = path.dirname(path.join(@site.sitePath, articlePath))
+    sp = @site.sitePath
+
+    next flow =
+      ERROR: (err) ->
+        callback(err)
+      makeIt: ->
+        bd(dir).mkdir(@next)
+      done: ->
+        file = path.join(sp, articlePath)
+        fs.writeFile file, '', (err) ->
+          callback(err, file)
+
+
+  @create: (site) ->
+    new Article(site)
+
 
 
           

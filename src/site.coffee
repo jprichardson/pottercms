@@ -166,22 +166,6 @@ class Site
         callback(null)
 
 
-  saveData: (callback) ->
-    self = @
-    next flow =
-      ERROR: (err) ->
-        callback(err)
-      articleFile: ->
-        obj = self.potterData['articles.json']
-        fs.writeFile obj.path, JSON.stringify(obj.data, null, 2), @next
-      tagFile: ->
-        obj = self.potterData['tags.json']
-        fs.writeFile obj.path, JSON.stringify(obj.data, null, 2), @next
-      potterFile: ->
-        obj = self.potterData['potter.json']
-        fs.writeFile obj.path, JSON.stringify(obj.data, null, 2), @next
-      done: ->
-        callback(null)
 
 
   serve: ->
