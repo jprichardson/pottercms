@@ -4,4 +4,4 @@
 
 0.0.1 / 2012-xx-xx
 ------------------
-* Unreleased... =)
+* Unreleased... was released. Not reliable.
