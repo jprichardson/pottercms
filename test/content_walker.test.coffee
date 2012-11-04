@@ -1,7 +1,7 @@
 testutil = require('testutil')
 fs = require('fs-extra')
 P = require('autoresolve')
-{ContentWalker} = require(P('lib/content_walker'))
+#{ContentWalker} = require(P('lib/content_walker'))
 S = require('string')
 
 TEST_DIR = ''
