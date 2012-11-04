@@ -87,23 +87,24 @@ describe('Site', function() {
         });
       });
     });
-    return describe('- buildAllArticles()', function() {
-      return it('should build all of the articles into a build dir with default options', function(done) {
-        var articleDir, buildArticleDir, buildDir, data, o1, o2, o3, s1, s2, s3, site, t1, t2, t3;
-        buildDir = path.join(TEST_DIR, 'public');
-        articleDir = path.join(TEST_DIR, 'articles');
-        buildArticleDir = path.join(buildDir, 'articles');
-        t1 = 'The Fall of the Roman Empire';
-        t2 = 'Applications of Austrian Economics';
-        t3 = "Napoleon's Conquests";
-        s1 = 'the-fall-of-the-roman-empire';
-        s2 = 'applications-of-austrian-economics';
-        s3 = "napoleons-conquests";
-        o1 = path.join(buildArticleDir, s1 + '.html');
-        o2 = path.join(buildArticleDir, s2 + '.html');
-        o3 = path.join(buildArticleDir, s3 + '.html');
-        data = "{{article.title}}\n===============\n\nBlah blah blah";
-        site = Site.create(TEST_DIR, 'personal_blog');
+    
+    describe('- buildAllArticles()', function() {
+      it('should build all of the articles into a build dir with default options', function(done) {
+        var buildDir = path.join(TEST_DIR, 'public')
+          , articleDir = path.join(TEST_DIR, 'articles')
+          , buildArticleDir = path.join(buildDir, 'articles')
+          , t1 = 'The Fall of the Roman Empire'
+          , t2 = 'Applications of Austrian Economics'
+          , t3 = "Napoleon's Conquests"
+          , s1 = 'the-fall-of-the-roman-empire'
+          , s2 = 'applications-of-austrian-economics'
+          , s3 = "napoleons-conquests"
+          , o1 = path.join(buildArticleDir, s1 + '.html')
+          , o2 = path.join(buildArticleDir, s2 + '.html')
+          , o3 = path.join(buildArticleDir, s3 + '.html')
+          , data = "{{article.title}}\n===============\n\nBlah blah blah"
+          , site = Site.create(TEST_DIR, 'personal_blog');
+        
         site.generateSkeleton(function(err) {
           if (err) return done(err)
           site.initialize(function(err) {
