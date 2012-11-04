@@ -22,6 +22,20 @@ describe('Site', function() {
       T (site.sitePath === '/tmp')
     });
   })
+
+  describe('- createArticle', function() {
+    it('should create an article', function(done) {
+      var site = Site.create(TEST_DIR, 'personal_blog');
+      site.createArticle('Global Thermal Nuclear War', 'war, politics', function(err, file) {
+        F (err)
+        T (S(file).contains(path.join(TEST_DIR, 'articles')))
+        var content = fs.readFileSync(file, 'utf8')
+        T (S(content).contains('Global Thermal Nuclear War'))
+        T (S(content).contains('war, politics'))
+        done()
+      })
+    })
+  })
     
     describe('- generateSkeleton()', function() {
       return it('should generate a new skeleton cms', function(done) {
