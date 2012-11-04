@@ -26,13 +26,17 @@ describe('Site', function() {
   describe('- createArticle', function() {
     it('should create an article', function(done) {
       var site = Site.create(TEST_DIR, 'personal_blog');
-      site.createArticle('Global Thermal Nuclear War', 'war, politics', function(err, file) {
-        F (err)
-        T (S(file).contains(path.join(TEST_DIR, 'articles')))
-        var content = fs.readFileSync(file, 'utf8')
-        T (S(content).contains('Global Thermal Nuclear War'))
-        T (S(content).contains('war, politics'))
-        done()
+      site.generateSkeleton(function(err) {
+        site.initialize(function(err) {
+          site.createArticle('Global Thermal Nuclear War', 'war, politics', function(err, file) {
+            F (err)
+            T (S(file).contains(path.join(TEST_DIR, 'articles')))
+            var content = fs.readFileSync(file, 'utf8')
+            T (S(content).contains('Global Thermal Nuclear War'))
+            T (S(content).contains('war, politics'))
+            done()
+          })
+        })
       })
     })
   })
@@ -116,10 +120,11 @@ describe('Site', function() {
               },
               createA1: function() {
                 var nf = this;
-                Article.create(site).createNew(t1, ['rome', 'history'], function(err, file) {
+                site.createArticle(t1, 'rome, history', this.next);
+                /*Article.create(site).createNew(t1, ['rome', 'history'], function(err, file) {
                   fs.writeFileSync(file, data);
                   nf.next();
-                });
+                });*/
               },
               createA2: function() {
                 var nf;
