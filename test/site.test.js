@@ -119,28 +119,13 @@ describe('Site', function() {
                 done(err);
               },
               createA1: function() {
-                var nf = this;
                 site.createArticle(t1, 'rome, history', this.next);
-                /*Article.create(site).createNew(t1, ['rome', 'history'], function(err, file) {
-                  fs.writeFileSync(file, data);
-                  nf.next();
-                });*/
               },
               createA2: function() {
-                var nf;
-                nf = this;
-                return Article.create(site).createNew(t2, ['economics', 'money'], function(err, file) {
-                  fs.writeFileSync(file, data);
-                  return nf.next();
-                });
+                site.createArticle(t2, 'economics, money', this.next);
               },
               createA3: function() {
-                var nf;
-                nf = this;
-                return Article.create(site).createNew(t3, ['history'], function(err, file) {
-                  fs.writeFileSync(file, data);
-                  return nf.next();
-                });
+                site.createArticle(t3, 'history', this.next);
               },
               publish: function() {
                 return site.buildAllArticles(this.next);
@@ -167,45 +152,6 @@ describe('Site', function() {
     });
   });
 
-  Article = (function() {
 
-    function Article(site) {
-      this.site = site;
-    }
-
-    Article.prototype.createNew = function(title, tags, callback) {
-      var articlePath, dir, flow, sp;
-      if (typeof tags === 'string') {
-        tags = tags.split(',').map(function(e) {
-          return e.trim();
-        });
-      }
-      articlePath = this.site.addArticleEntry(title, tags);
-      dir = path.dirname(path.join(this.site.sitePath, articlePath));
-      sp = this.site.sitePath;
-      return next(flow = {
-        ERROR: function(err) {
-          return callback(err);
-        },
-        makeIt: function() {
-          return bd(dir).mkdir(this.next);
-        },
-        done: function() {
-          var file;
-          file = path.join(sp, articlePath);
-          return fs.writeFile(file, '', function(err) {
-            return callback(err, file);
-          });
-        }
-      });
-    };
-
-    Article.create = function(site) {
-      return new Article(site);
-    };
-
-    return Article;
-
-  })();
 
 
