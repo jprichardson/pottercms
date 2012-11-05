@@ -68,29 +68,7 @@ describe('Site', function() {
         });
       });
     });
-    describe('- addArticleEntry()', function() {
-      return it('should add an article entry into the article data file with a tag array', function(done) {
-        var site;
-        site = Site.create(TEST_DIR, 'personal_blog');
-        return site.generateSkeleton(function(err) {
-          return site.initialize(function(err) {
-            var ad, articlePath, now, slug, tags, title;
-            title = 'Global Thermal Nuclear War';
-            slug = S(title).dasherize().toString().replace('-', '');
-            tags = ['politics', 'war'];
-            now = new Date();
-            ad = site.potterData['articles.json'].data;
-            T(_(ad.articles).size() === 0);
-            articlePath = site.addArticleEntry(title, tags);
-            T(S(articlePath).contains(now.getFullYear()));
-            T(S(articlePath).contains((now.getMonth() + 1).toString()));
-            T(S(articlePath).contains(slug));
-            T(_(ad.articles).size() === 1);
-            return done();
-          });
-        });
-      });
-    });
+    
     
     describe('- buildAllArticles()', function() {
       it('should build all of the articles into a build dir with default options', function(done) {
