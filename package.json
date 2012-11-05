@@ -52,7 +52,9 @@
     "buffet": "~0.4.5",
     "nextflow": "~0.2.3",
     "walker": "~1.0.3",
-    "markdown-extra": "0.0.1"
+    "markdown-extra": "0.0.1",
+    "markdown-walker": "0.0.2",
+    "markdown-page": "0.0.2"
   },
   "devDependencies": {
     "testutil": "~0.2.4",

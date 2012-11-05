@@ -128,22 +128,24 @@ describe('Site', function() {
                 site.createArticle(t3, 'history', this.next);
               },
               publish: function() {
-                return site.buildAllArticles(this.next);
+                site.buildAllArticles(this.next);
               },
               checkPaths: function() {
-                var index, indexFile;
-                T(fs.existsSync(o1));
-                T(fs.existsSync(o2));
-                T(fs.existsSync(o3));
-                T(fs.existsSync(path.join(buildDir, 'vendor')));
-                T(S(fs.readFileSync(o1, 'utf8').toString()).contains('<h1>' + t1));
-                T(S(fs.readFileSync(o2, 'utf8').toString()).contains('<h1>' + t2));
-                indexFile = path.join(buildArticleDir, 'index.html');
-                T(fs.existsSync(indexFile));
-                index = fs.readFileSync(indexFile, 'utf8');
-                T(S(index).contains(t1));
-                T(S(index).contains(t2));
-                return done();
+                T (fs.existsSync(o1));
+                T (fs.existsSync(o2));
+                T (fs.existsSync(o3));
+                T (fs.existsSync(path.join(buildDir, 'vendor')));
+                T (S(fs.readFileSync(o1, 'utf8').toString()).contains('<h1>' + t1));
+                T (S(fs.readFileSync(o2, 'utf8').toString()).contains('<h1>' + t2));
+                
+                var indexFile = path.join(buildArticleDir, 'index.html');
+                T (fs.existsSync(indexFile));
+                
+                var index = fs.readFileSync(indexFile, 'utf8');
+                T (S(index).contains(t1));
+                T (S(index).contains(t2));
+                
+                done();
               }
             });
           });
