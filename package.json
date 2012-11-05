@@ -47,7 +47,7 @@
     "batchdir": "~0.1.0",
     "batchfile": "~0.1.2",
     "fnoc": "~0.2.1",
-    "buffet": "~0.4.5",
+    "buffet": "~0.4.6",
     "nextflow": "~0.2.3",
     "walker": "~1.0.3",
     "markdown-extra": "0.0.1",

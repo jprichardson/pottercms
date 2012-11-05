@@ -9,9 +9,8 @@
     "urlFormat": "{{slug}}",
     "indexUrl": "index.html"
   },
-  "services": {
+  "partials": {
     "googleAnalytics": {
-      "enable": false,
       "id": ""
     }
   },
