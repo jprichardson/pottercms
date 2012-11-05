@@ -6,8 +6,8 @@
   },
   "articles": {
     "oldUrlformat": "articles/{{date-year}}/{{date-month}}/{{slug}}",
-    "urlFormat": "articles/{{slug}}",
-    "indexUrl": "articles/index.html"
+    "urlFormat": "{{slug}}",
+    "indexUrl": "index.html"
   },
   "services": {
     "googleAnalytics": {
