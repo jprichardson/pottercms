@@ -6,7 +6,8 @@ var testutil = require('testutil')
   , bd = require('batchdir')
   , _ = require('underscore')
   , S = require('string')
-  , next = require('nextflow');
+  , next = require('nextflow')
+  , MarkdownPage = require('markdown-page').MarkdownPage
 
 var TEST_DIR = '';
 
@@ -84,7 +85,9 @@ describe('Site', function() {
           , o1 = path.join(buildArticleDir, s1 + '.html')
           , o2 = path.join(buildArticleDir, s2 + '.html')
           , o3 = path.join(buildArticleDir, s3 + '.html')
-          , site = Site.create(TEST_DIR, 'personal_blog');
+          , site = Site.create(TEST_DIR, 'personal_blog')
+
+
         
         site.generateSkeleton(function(err) {
           if (err) return done(err)
@@ -96,13 +99,13 @@ describe('Site', function() {
                 done(err);
               },
               createA1: function() {
-                site.createArticle(t1, 'rome, history', this.next);
+                createArticle(site.sitePath, t1, ['rome', 'history'], new Date(), this.next);
               },
               createA2: function() {
-                site.createArticle(t2, 'economics, money', this.next);
+                createArticle(site.sitePath, t2, ['economics', 'money'], new Date(), this.next);
               },
               createA3: function() {
-                site.createArticle(t3, 'history', this.next);
+                createArticle(site.sitePath, t3, ['history', 'money'], new Date(), this.next);
               },
               publish: function() {
                 site.buildAllArticles(this.next);
@@ -131,6 +134,32 @@ describe('Site', function() {
     });
   });
 
+function createArticle(sitePath, title, tags, pubDate, callback) {
+  var _this = this
+    , mdp = new MarkdownPage()
+    , articleFile = path.join(sitePath, 'articles', getDateMonthPath())
+
+  mdp.title = title
+  articleFile = path.join(articleFile, mdp.slug() + '.md')
+
+  fs.exists(articleFile, function(itExists) {
+    if (itExists) return callback(new Error(articleFile + ' already exists.'));
+
+    fs.touch(articleFile, function(err) {
+      if (err) return callback(err);
+
+      mdp.metadata.publish = pubDate
+      mdp.metadata.tags = tags
+
+      mdp.writeFile(articleFile, callback)
+    })
+  })
+}
+
+function getDateMonthPath() {
+  var date = new Date();
+  return path.join(date.getFullYear().toString(), ('0' + (date.getMonth() + 1)).slice(-2));
+}
 
 
 
