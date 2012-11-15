@@ -2,7 +2,8 @@
   "blog": {
     "name": "My Blog Name",
     "tagline": "The one true source of nothing...",
-    "url": "http://myblog.com"
+    "url": "http://myblog.com",
+    "port": 2222
   },
   "articles": {
     "oldUrlformat": "articles/{{date-year}}/{{date-month}}/{{slug}}",
