@@ -1,3 +1,7 @@
+0.0.3 / 2012-11-19
+------------------
+* Fixed some deps.
+
 0.0.2 / 2012-11-15
 ------------------
 * First release that's actually usable.
