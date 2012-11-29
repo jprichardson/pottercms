@@ -1,3 +1,9 @@
+0.0.4 / 2012-11-29
+------------------
+* Create article from command line.
+* Changed output files from showing Potter version number.
+* Cleaned up code a bit.
+
 0.0.3 / 2012-11-19
 ------------------
 * Fixed some deps.

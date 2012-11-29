@@ -3,7 +3,7 @@
   "name": "pottercms",
   "homepage": "http://pottercms.com",
   "description": "A markdown content management system.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "keywords": [
     "blog",
     "static",
@@ -52,7 +52,8 @@
     "markdown-extra": "0.0.1",
     "markdown-walker": "0.0.2",
     "markdown-page": "0.0.5",
-    "batchfile": "~0.1.2"
+    "batchfile": "~0.1.2",
+    "open": "0.0.2"
   },
   "devDependencies": {
     "testutil": "~0.2.4",
